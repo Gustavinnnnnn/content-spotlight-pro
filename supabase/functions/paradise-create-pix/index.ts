@@ -55,22 +55,22 @@ Deno.serve(async (req) => {
     }
     const c = body.customer;
     const name = (c.name || "").trim();
-    const email = (c.email || "").trim();
-    const document = onlyDigits(c.document);
     const phone = onlyDigits(c.phone);
 
     if (name.length < 2 || name.length > 120) {
       return new Response(JSON.stringify({ error: "Nome inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) {
-      return new Response(JSON.stringify({ error: "E-mail inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (document.length !== 11 && document.length !== 14) {
-      return new Response(JSON.stringify({ error: "CPF/CNPJ inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
     if (phone.length < 10 || phone.length > 13) {
-      return new Response(JSON.stringify({ error: "Telefone inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Telefone inválido (com DDD)" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
+    // Auto-generate email and CPF (gateway requires them, but we don't ask the customer).
+    const email = c.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)
+      ? c.email.trim()
+      : `${slugifyName(name)}.${phone.slice(-4)}@cliente.local`;
+    const document = c.document && (onlyDigits(c.document).length === 11 || onlyDigits(c.document).length === 14)
+      ? onlyDigits(c.document)
+      : generateCPF();
 
     // Fetch plan
     const { data: plan, error: planErr } = await supabase
