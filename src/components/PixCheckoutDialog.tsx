@@ -119,18 +119,8 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required className="h-9 text-sm" />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="email" className="text-xs">E-mail</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} required className="h-9 text-sm" />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1">
-                <Label htmlFor="doc" className="text-xs">CPF/CNPJ</Label>
-                <Input id="doc" value={document} onChange={(e) => setDocument(e.target.value)} inputMode="numeric" maxLength={18} required className="h-9 text-sm" />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="phone" className="text-xs">Telefone</Label>
-                <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required className="h-9 text-sm" />
-              </div>
+              <Label htmlFor="phone" className="text-xs">Telefone (WhatsApp)</Label>
+              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required className="h-9 text-sm" />
             </div>
             <Button type="submit" className="w-full h-9 text-sm mt-1" disabled={loading}>
               {loading ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> Gerando...</> : <><QrCode className="mr-2 h-3 w-3" /> Gerar PIX</>}
