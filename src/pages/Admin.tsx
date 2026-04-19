@@ -7,6 +7,7 @@ import { RequireAdmin } from "@/components/RequireAdmin";
 import { SettingsEditor } from "@/components/admin/SettingsEditor";
 import { PlansEditor } from "@/components/admin/PlansEditor";
 import { GalleryEditor } from "@/components/admin/GalleryEditor";
+import { DashboardEditor } from "@/components/admin/DashboardEditor";
 
 const Admin = () => {
   return (
@@ -25,12 +26,14 @@ const Admin = () => {
         </header>
 
         <main className="mx-auto max-w-3xl px-4 py-6">
-          <Tabs defaultValue="profile">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="dashboard">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
               <TabsTrigger value="profile">Perfil</TabsTrigger>
               <TabsTrigger value="plans">Planos</TabsTrigger>
               <TabsTrigger value="gallery">Galeria</TabsTrigger>
             </TabsList>
+            <TabsContent value="dashboard" className="mt-4"><DashboardEditor /></TabsContent>
             <TabsContent value="profile" className="mt-4"><SettingsEditor /></TabsContent>
             <TabsContent value="plans" className="mt-4"><PlansEditor /></TabsContent>
             <TabsContent value="gallery" className="mt-4"><GalleryEditor /></TabsContent>
