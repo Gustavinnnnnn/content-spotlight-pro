@@ -187,6 +187,74 @@ export type Database = {
           },
         ]
       }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_document: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          expires_at: string | null
+          id: string
+          paradise_transaction_id: string | null
+          plan_id: string | null
+          plan_name: string | null
+          qr_code: string | null
+          qr_code_base64: string | null
+          raw_payload: Json | null
+          reference: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_document?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          expires_at?: string | null
+          id?: string
+          paradise_transaction_id?: string | null
+          plan_id?: string | null
+          plan_name?: string | null
+          qr_code?: string | null
+          qr_code_base64?: string | null
+          raw_payload?: Json | null
+          reference: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_document?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          expires_at?: string | null
+          id?: string
+          paradise_transaction_id?: string | null
+          plan_id?: string | null
+          plan_name?: string | null
+          qr_code?: string | null
+          qr_code_base64?: string | null
+          raw_payload?: Json | null
+          reference?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
