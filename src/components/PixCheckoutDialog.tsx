@@ -118,27 +118,27 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
         </DialogHeader>
 
         {step === "form" && (
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="space-y-1.5">
-              <Label htmlFor="name">Nome completo</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required />
+          <form onSubmit={handleSubmit} className="space-y-2">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="text-xs">Nome</Label>
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required className="h-9 text-sm" />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">E-mail</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} required />
+            <div className="space-y-1">
+              <Label htmlFor="email" className="text-xs">E-mail</Label>
+              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} required className="h-9 text-sm" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label htmlFor="doc">CPF/CNPJ</Label>
-                <Input id="doc" value={document} onChange={(e) => setDocument(e.target.value)} inputMode="numeric" maxLength={18} required />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label htmlFor="doc" className="text-xs">CPF/CNPJ</Label>
+                <Input id="doc" value={document} onChange={(e) => setDocument(e.target.value)} inputMode="numeric" maxLength={18} required className="h-9 text-sm" />
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="phone">Telefone</Label>
-                <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required />
+              <div className="space-y-1">
+                <Label htmlFor="phone" className="text-xs">Telefone</Label>
+                <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required className="h-9 text-sm" />
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando PIX...</> : <><QrCode className="mr-2 h-4 w-4" /> Gerar PIX</>}
+            <Button type="submit" className="w-full h-9 text-sm mt-1" disabled={loading}>
+              {loading ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> Gerando...</> : <><QrCode className="mr-2 h-3 w-3" /> Gerar PIX</>}
             </Button>
           </form>
         )}
