@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -10,13 +10,15 @@ import { PlansEditor } from "@/components/admin/PlansEditor";
 import { GalleryEditor } from "@/components/admin/GalleryEditor";
 import { DashboardEditor } from "@/components/admin/DashboardEditor";
 import { SalesEditor } from "@/components/admin/SalesEditor";
+import { CustomersEditor } from "@/components/admin/CustomersEditor";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "sales" | "profile" | "plans" | "gallery";
+type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "gallery";
 
 const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "sales", label: "Vendas", icon: ShoppingBag },
+  { id: "customers", label: "Clientes", icon: Users },
   { id: "profile", label: "Perfil", icon: User },
   { id: "plans", label: "Planos", icon: Tag },
   { id: "gallery", label: "Galeria", icon: ImageIcon },
