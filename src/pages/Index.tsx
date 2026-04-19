@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Gallery } from "@/components/Gallery";
 import { PlanButton } from "@/components/PlanButton";
 import { Stats } from "@/components/Stats";
+import { PixCheckoutDialog } from "@/components/PixCheckoutDialog";
 import defaultBanner from "@/assets/default-banner.jpg";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 
@@ -43,6 +44,8 @@ const Index = () => {
   const [settings, setSettings] = useState<ClubSettings | null>(null);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [media, setMedia] = useState<MediaItem[]>([]);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -69,7 +72,12 @@ const Index = () => {
 
   const handlePlanClick = async (plan: Plan) => {
     await supabase.from("site_events").insert({ event_type: "plan_click", plan_id: plan.id });
-    if (plan.checkout_url) window.open(plan.checkout_url, "_blank", "noopener,noreferrer");
+    if (plan.checkout_url) {
+      window.open(plan.checkout_url, "_blank", "noopener,noreferrer");
+    } else {
+      setSelectedPlan(plan);
+      setCheckoutOpen(true);
+    }
   };
 
   return (
@@ -144,6 +152,8 @@ const Index = () => {
           <Gallery items={media} />
         </section>
       </main>
+
+      <PixCheckoutDialog plan={selectedPlan} open={checkoutOpen} onOpenChange={setCheckoutOpen} />
     </div>
   );
 };

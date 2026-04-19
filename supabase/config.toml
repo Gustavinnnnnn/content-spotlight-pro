@@ -1,1 +1,10 @@
 project_id = "tgwjchuheokhylinjckk"
+
+[functions.paradise-webhook]
+verify_jwt = false
+
+[functions.paradise-create-pix]
+verify_jwt = false
+
+[functions.paradise-check-status]
+verify_jwt = false
