@@ -9,10 +9,28 @@ const PARADISE_URL = "https://multi.paradisepags.com/api/v1/transaction.php";
 
 interface Body {
   planId: string;
-  customer: { name: string; email: string; document: string; phone: string };
+  customer: { name: string; phone: string; email?: string; document?: string };
 }
 
 const onlyDigits = (s: string) => (s || "").replace(/\D/g, "");
+
+// Generate a syntactically valid CPF (Brazilian individual taxpayer number) with correct check digits.
+const generateCPF = (): string => {
+  const n: number[] = [];
+  for (let i = 0; i < 9; i++) n.push(Math.floor(Math.random() * 10));
+  const calc = (arr: number[], start: number) => {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) sum += arr[i] * (start - i);
+    const rest = (sum * 10) % 11;
+    return rest === 10 ? 0 : rest;
+  };
+  n.push(calc(n, 10));
+  n.push(calc(n, 11));
+  return n.join("");
+};
+
+const slugifyName = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "").slice(0, 30) || "cliente";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -37,22 +55,22 @@ Deno.serve(async (req) => {
     }
     const c = body.customer;
     const name = (c.name || "").trim();
-    const email = (c.email || "").trim();
-    const document = onlyDigits(c.document);
     const phone = onlyDigits(c.phone);
 
     if (name.length < 2 || name.length > 120) {
       return new Response(JSON.stringify({ error: "Nome inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) {
-      return new Response(JSON.stringify({ error: "E-mail inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-    if (document.length !== 11 && document.length !== 14) {
-      return new Response(JSON.stringify({ error: "CPF/CNPJ inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
     if (phone.length < 10 || phone.length > 13) {
-      return new Response(JSON.stringify({ error: "Telefone inválido" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Telefone inválido (com DDD)" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
+    // Auto-generate email and CPF (gateway requires them, but we don't ask the customer).
+    const email = c.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)
+      ? c.email.trim()
+      : `${slugifyName(name)}.${phone.slice(-4)}@cliente.local`;
+    const document = c.document && (onlyDigits(c.document).length === 11 || onlyDigits(c.document).length === 14)
+      ? onlyDigits(c.document)
+      : generateCPF();
 
     // Fetch plan
     const { data: plan, error: planErr } = await supabase

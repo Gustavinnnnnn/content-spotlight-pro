@@ -35,8 +35,6 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
   const [step, setStep] = useState<"form" | "pix" | "paid">("form");
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [document, setDocument] = useState("");
   const [phone, setPhone] = useState("");
   const [pix, setPix] = useState<PixData | null>(null);
   const [copied, setCopied] = useState(false);
@@ -72,19 +70,16 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
     e.preventDefault();
     if (!plan) return;
 
-    const doc = onlyDigits(document);
     const ph = onlyDigits(phone);
 
     if (name.trim().length < 2) return toast.error("Informe seu nome.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast.error("E-mail inválido.");
-    if (doc.length !== 11 && doc.length !== 14) return toast.error("CPF ou CNPJ inválido.");
     if (ph.length < 10) return toast.error("Telefone inválido (com DDD).");
 
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("paradise-create-pix", {
       body: {
         planId: plan.id,
-        customer: { name: name.trim(), email: email.trim(), document: doc, phone: ph },
+        customer: { name: name.trim(), phone: ph },
       },
     });
     setLoading(false);
@@ -124,18 +119,8 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} required className="h-9 text-sm" />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="email" className="text-xs">E-mail</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} required className="h-9 text-sm" />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="space-y-1">
-                <Label htmlFor="doc" className="text-xs">CPF/CNPJ</Label>
-                <Input id="doc" value={document} onChange={(e) => setDocument(e.target.value)} inputMode="numeric" maxLength={18} required className="h-9 text-sm" />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="phone" className="text-xs">Telefone</Label>
-                <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required className="h-9 text-sm" />
-              </div>
+              <Label htmlFor="phone" className="text-xs">Telefone (WhatsApp)</Label>
+              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" maxLength={15} placeholder="(11) 99999-9999" required className="h-9 text-sm" />
             </div>
             <Button type="submit" className="w-full h-9 text-sm mt-1" disabled={loading}>
               {loading ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> Gerando...</> : <><QrCode className="mr-2 h-3 w-3" /> Gerar PIX</>}
