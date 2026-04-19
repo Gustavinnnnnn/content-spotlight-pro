@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -9,12 +9,14 @@ import { SettingsEditor } from "@/components/admin/SettingsEditor";
 import { PlansEditor } from "@/components/admin/PlansEditor";
 import { GalleryEditor } from "@/components/admin/GalleryEditor";
 import { DashboardEditor } from "@/components/admin/DashboardEditor";
+import { SalesEditor } from "@/components/admin/SalesEditor";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "profile" | "plans" | "gallery";
+type Section = "dashboard" | "sales" | "profile" | "plans" | "gallery";
 
 const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "sales", label: "Vendas", icon: ShoppingBag },
   { id: "profile", label: "Perfil", icon: User },
   { id: "plans", label: "Planos", icon: Tag },
   { id: "gallery", label: "Galeria", icon: ImageIcon },
@@ -95,6 +97,7 @@ const Admin = () => {
 
         <main className="mx-auto max-w-3xl px-4 py-6">
           {section === "dashboard" && <DashboardEditor />}
+          {section === "sales" && <SalesEditor />}
           {section === "profile" && <SettingsEditor />}
           {section === "plans" && <PlansEditor />}
           {section === "gallery" && <GalleryEditor />}
