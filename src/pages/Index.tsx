@@ -57,64 +57,66 @@ const Index = () => {
       if (m.data) setMedia(m.data as MediaItem[]);
     };
     load();
+    // log a page view (one per session)
+    if (!sessionStorage.getItem("v_logged")) {
+      supabase.from("site_events").insert({ event_type: "view" }).then(() => {
+        sessionStorage.setItem("v_logged", "1");
+      });
+    }
   }, []);
 
   const banner = settings?.banner_url || defaultBanner;
   const avatar = settings?.avatar_url || defaultAvatar;
 
-  const handlePlanClick = (plan: Plan) => {
+  const handlePlanClick = async (plan: Plan) => {
+    await supabase.from("site_events").insert({ event_type: "plan_click", plan_id: plan.id });
     if (plan.checkout_url) window.open(plan.checkout_url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm pb-16">
+    <div className="min-h-screen bg-gradient-warm pb-12">
       {/* Banner */}
       <header className="relative">
-        <div className="relative h-44 w-full overflow-hidden sm:h-56 md:h-64">
+        <div className="relative h-36 w-full overflow-hidden sm:h-48">
           <img src={banner} alt="Banner" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
         </div>
         <Link
           to="/admin"
-          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-primary shadow-card backdrop-blur-sm transition-smooth hover:scale-105"
+          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary shadow-card backdrop-blur-sm transition-smooth hover:scale-105"
           aria-label="Painel admin"
         >
-          <Settings className="h-5 w-5" />
+          <Settings className="h-4 w-4" />
         </Link>
       </header>
 
-      <main className="mx-auto -mt-14 max-w-xl px-4">
+      <main className="mx-auto -mt-12 max-w-md px-4">
         {/* Avatar + Name */}
         <section className="flex flex-col items-center text-center">
-          <div className="relative">
-            <div className="rounded-full bg-gradient-primary p-1 shadow-glow">
-              <img
-                src={avatar}
-                alt={settings?.name || "Avatar"}
-                className="h-24 w-24 rounded-full border-4 border-background object-cover sm:h-28 sm:w-28"
-              />
-            </div>
+          <div className="rounded-full bg-gradient-primary p-1 shadow-glow">
+            <img
+              src={avatar}
+              alt={settings?.name || "Avatar"}
+              className="h-20 w-20 rounded-full border-4 border-background object-cover"
+            />
           </div>
 
-          <div className="mt-3 flex items-center gap-1.5">
-            <h1 className="text-2xl font-extrabold text-foreground sm:text-3xl">
+          <div className="mt-2.5 flex items-center gap-1.5">
+            <h1 className="text-xl font-extrabold text-foreground">
               {settings?.name || "Carregando..."}
             </h1>
             {settings?.verified && (
-              <BadgeCheck className="h-6 w-6 fill-primary text-primary-foreground" aria-label="Verificado" />
+              <BadgeCheck className="h-5 w-5 fill-primary text-primary-foreground" aria-label="Verificado" />
             )}
           </div>
 
           {settings?.bio && (
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{settings.bio}</p>
+            <p className="mt-1.5 max-w-sm text-xs leading-relaxed text-muted-foreground">{settings.bio}</p>
           )}
         </section>
 
-        {/* Plans */}
-        <section className="mt-8 space-y-3">
-          <h2 className="mb-3 text-center text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            Escolha seu plano
-          </h2>
+        {/* Plans — compactos */}
+        <section className="mt-5 grid grid-cols-2 gap-2.5">
           {plans.map((plan) => (
             <PlanButton
               key={plan.id}
@@ -130,7 +132,7 @@ const Index = () => {
         </section>
 
         {/* Stats */}
-        <section className="mt-10">
+        <section className="mt-5">
           <Stats
             posts={settings?.posts_count ?? 0}
             videos={settings?.videos_count ?? 0}
@@ -140,9 +142,9 @@ const Index = () => {
         </section>
 
         {/* Gallery */}
-        <section className="mt-6">
-          <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-            Galeria — Prévias
+        <section className="mt-5">
+          <h2 className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+            Galeria
           </h2>
           <Gallery items={media} />
         </section>
