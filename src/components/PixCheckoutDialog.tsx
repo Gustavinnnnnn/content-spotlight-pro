@@ -172,13 +172,13 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
         )}
 
         {step === "paid" && (
-          <div className="space-y-3 py-6 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <Check className="h-8 w-8 text-primary" />
+          <div className="space-y-2 py-4 text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Check className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-lg font-bold">Pagamento aprovado!</h3>
-            <p className="text-sm text-muted-foreground">Recebemos sua compra. O acesso será liberado em breve.</p>
-            <Button onClick={() => onOpenChange(false)} className="w-full">Fechar</Button>
+            <h3 className="text-base font-bold">Pagamento aprovado!</h3>
+            <p className="text-xs text-muted-foreground">Acesso liberado. Em breve entraremos em contato.</p>
+            <Button onClick={() => onOpenChange(false)} className="w-full h-9 text-sm mt-2">Fechar</Button>
           </div>
         )}
       </DialogContent>
