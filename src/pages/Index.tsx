@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { BadgeCheck, Settings } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Gallery } from "@/components/Gallery";
 import { PlanButton } from "@/components/PlanButton";
@@ -77,16 +76,11 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-warm pb-12">
       {/* Banner */}
       <header className="relative">
-        <div className="relative h-44 w-full overflow-hidden sm:h-60">
+        <div className="relative h-48 w-full overflow-hidden sm:h-64">
           <img src={banner} alt="Banner" className="h-full w-full object-cover object-center" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-background/0 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary-deep/10 mix-blend-overlay" />
         </div>
-        <Link
-          to="/admin"
-          className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-primary shadow-card backdrop-blur-sm transition-smooth hover:scale-105"
-          aria-label="Painel admin"
-        >
-          <Settings className="h-4 w-4" />
-        </Link>
       </header>
 
       <main className="relative z-10 mx-auto -mt-9 max-w-md px-4 sm:-mt-11">
