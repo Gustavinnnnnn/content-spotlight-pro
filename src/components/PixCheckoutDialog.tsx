@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Copy, Check, Loader2, QrCode } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -144,8 +145,12 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
 
         {step === "pix" && pix && (
           <div className="space-y-4">
-            <div className="rounded-xl bg-card p-3 shadow-card">
-              <img src={pix.qr_code_base64} alt="QR Code PIX" className="mx-auto h-56 w-56 rounded-lg" />
+            <div className="flex justify-center rounded-xl bg-white p-4 shadow-card">
+              {pix.qr_code_base64 ? (
+                <img src={pix.qr_code_base64} alt="QR Code PIX" className="h-56 w-56 rounded-lg" />
+              ) : (
+                <QRCodeSVG value={pix.qr_code} size={224} level="M" includeMargin={false} />
+              )}
             </div>
             <div className="text-center">
               <div className="text-xs uppercase tracking-wider text-muted-foreground">Valor</div>
