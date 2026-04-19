@@ -107,13 +107,13 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{plan?.name}</DialogTitle>
-          <DialogDescription>
-            {step === "form" && `Pague ${plan?.price_label} via PIX para liberar o acesso.`}
-            {step === "pix" && "Escaneie o QR Code ou copie o código PIX abaixo."}
-            {step === "paid" && "Acesso liberado. Em breve entraremos em contato."}
+      <DialogContent className="max-w-sm max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-base">{plan?.name}</DialogTitle>
+          <DialogDescription className="text-xs">
+            {step === "form" && `Pague ${plan?.price_label} via PIX.`}
+            {step === "pix" && "Escaneie o QR Code ou copie o código PIX."}
+            {step === "paid" && "Acesso liberado!"}
           </DialogDescription>
         </DialogHeader>
 
