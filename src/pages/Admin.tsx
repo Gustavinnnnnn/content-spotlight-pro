@@ -100,6 +100,7 @@ const Admin = () => {
         <main className="mx-auto max-w-3xl px-4 py-6">
           {section === "dashboard" && <DashboardEditor />}
           {section === "sales" && <SalesEditor />}
+          {section === "customers" && <CustomersEditor />}
           {section === "profile" && <SettingsEditor />}
           {section === "plans" && <PlansEditor />}
           {section === "gallery" && <GalleryEditor />}
