@@ -144,28 +144,28 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
         )}
 
         {step === "pix" && pix && (
-          <div className="space-y-4">
-            <div className="flex justify-center rounded-xl bg-white p-4 shadow-card">
+          <div className="space-y-3">
+            <div className="flex justify-center rounded-lg bg-white p-3 shadow-sm">
               {pix.qr_code_base64 ? (
-                <img src={pix.qr_code_base64} alt="QR Code PIX" className="h-56 w-56 rounded-lg" />
+                <img src={pix.qr_code_base64} alt="QR Code PIX" className="h-44 w-44 rounded" />
               ) : (
-                <QRCodeSVG value={pix.qr_code} size={224} level="M" includeMargin={false} />
+                <QRCodeSVG value={pix.qr_code} size={176} level="M" includeMargin={false} />
               )}
-            </div>
+            </div>            
             <div className="text-center">
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">Valor</div>
-              <div className="text-xl font-extrabold">{formatCents(pix.amount)}</div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs">Código PIX (copie e cole)</Label>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Valor</div>
+              <div className="text-lg font-bold">{formatCents(pix.amount)}</div>
+            </div>            
+            <div className="space-y-1.5">
+              <Label className="text-[10px]">Código PIX (copie e cole)</Label>
               <div className="flex gap-2">
-                <Input readOnly value={pix.qr_code} className="font-mono text-xs" onFocus={(e) => e.currentTarget.select()} />
-                <Button type="button" variant="secondary" size="icon" onClick={copyCode} aria-label="Copiar código">
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <Input readOnly value={pix.qr_code} className="font-mono text-[10px] h-8" onFocus={(e) => e.currentTarget.select()} />
+                <Button type="button" variant="secondary" size="icon" className="h-8 w-8" onClick={copyCode} aria-label="Copiar código">
+                  {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                 </Button>
               </div>
-            </div>
-            <div className="flex items-center justify-center gap-2 rounded-lg bg-muted/60 p-2.5 text-xs text-muted-foreground">
+            </div>            
+            <div className="flex items-center justify-center gap-2 rounded-md bg-muted/60 p-2 text-[10px] text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" /> Aguardando pagamento...
             </div>
           </div>
