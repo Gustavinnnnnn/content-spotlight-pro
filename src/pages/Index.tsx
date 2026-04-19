@@ -77,8 +77,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-warm pb-12">
       {/* Banner */}
       <header className="relative">
-        <div className="relative h-40 w-full overflow-hidden sm:h-52">
-          <img src={banner} alt="Banner" className="h-full w-full object-cover" />
+        <div className="relative h-44 w-full overflow-hidden sm:h-60">
+          <img src={banner} alt="Banner" className="h-full w-full object-cover object-center" />
         </div>
         <Link
           to="/admin"
@@ -89,15 +89,17 @@ const Index = () => {
         </Link>
       </header>
 
-      <main className="mx-auto -mt-14 max-w-md px-4">
+      <main className="relative z-10 mx-auto -mt-9 max-w-md px-4 sm:-mt-11">
         {/* Avatar + Name */}
-        <section className="flex flex-col items-center text-center">
-          <div className="rounded-full bg-gradient-primary p-1 shadow-glow">
-            <img
-              src={avatar}
-              alt={settings?.name || "Avatar"}
-              className="h-24 w-24 rounded-full border-4 border-background object-cover"
-            />
+        <section className="relative z-10 flex flex-col items-center text-center">
+          <div className="rounded-full bg-background p-1.5 shadow-card">
+            <div className="rounded-full bg-gradient-primary p-1 shadow-glow">
+              <img
+                src={avatar}
+                alt={settings?.name || "Avatar"}
+                className="h-24 w-24 rounded-full border-4 border-background object-cover sm:h-28 sm:w-28"
+              />
+            </div>
           </div>
 
           <div className="mt-2.5 flex items-center gap-1.5">
