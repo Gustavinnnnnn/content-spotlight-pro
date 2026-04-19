@@ -35,8 +35,6 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
   const [step, setStep] = useState<"form" | "pix" | "paid">("form");
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [document, setDocument] = useState("");
   const [phone, setPhone] = useState("");
   const [pix, setPix] = useState<PixData | null>(null);
   const [copied, setCopied] = useState(false);
@@ -72,19 +70,16 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
     e.preventDefault();
     if (!plan) return;
 
-    const doc = onlyDigits(document);
     const ph = onlyDigits(phone);
 
     if (name.trim().length < 2) return toast.error("Informe seu nome.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast.error("E-mail inválido.");
-    if (doc.length !== 11 && doc.length !== 14) return toast.error("CPF ou CNPJ inválido.");
     if (ph.length < 10) return toast.error("Telefone inválido (com DDD).");
 
     setLoading(true);
     const { data, error } = await supabase.functions.invoke("paradise-create-pix", {
       body: {
         planId: plan.id,
-        customer: { name: name.trim(), email: email.trim(), document: doc, phone: ph },
+        customer: { name: name.trim(), phone: ph },
       },
     });
     setLoading(false);
