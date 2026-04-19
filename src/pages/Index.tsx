@@ -77,9 +77,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-warm pb-12">
       {/* Banner */}
       <header className="relative">
-        <div className="relative h-36 w-full overflow-hidden sm:h-48">
+        <div className="relative h-40 w-full overflow-hidden sm:h-52">
           <img src={banner} alt="Banner" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
         </div>
         <Link
           to="/admin"
@@ -90,14 +89,14 @@ const Index = () => {
         </Link>
       </header>
 
-      <main className="mx-auto -mt-12 max-w-md px-4">
+      <main className="mx-auto -mt-14 max-w-md px-4">
         {/* Avatar + Name */}
         <section className="flex flex-col items-center text-center">
           <div className="rounded-full bg-gradient-primary p-1 shadow-glow">
             <img
               src={avatar}
               alt={settings?.name || "Avatar"}
-              className="h-20 w-20 rounded-full border-4 border-background object-cover"
+              className="h-24 w-24 rounded-full border-4 border-background object-cover"
             />
           </div>
 
