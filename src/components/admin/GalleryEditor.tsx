@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Trash2, Upload } from "lucide-react";
+import { Trash2, Upload, Image as ImageIcon, Play } from "lucide-react";
 import { toast } from "sonner";
 
 interface MediaItem {
@@ -56,13 +56,24 @@ export const GalleryEditor = () => {
     if (error) toast.error(error.message); else { toast.success("Removida"); load(); }
   };
 
+  const photos = items.filter(i => i.type === "photo").length;
+  const videos = items.filter(i => i.type === "video").length;
+
   return (
-    <div className="space-y-4 rounded-2xl bg-card p-5 shadow-card">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Galeria</h2>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between rounded-2xl border border-border bg-gradient-admin-card p-4 shadow-admin">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-admin-accent shadow-admin-glow">
+            <ImageIcon className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold leading-tight">Galeria</h2>
+            <p className="text-xs text-muted-foreground">{photos} foto(s) · {videos} vídeo(s)</p>
+          </div>
+        </div>
         <Label className="cursor-pointer">
-          <Button asChild size="sm" disabled={uploading}>
-            <span><Upload className="mr-1 h-4 w-4" />{uploading ? "Enviando..." : "Adicionar foto/vídeo"}</span>
+          <Button asChild size="sm" disabled={uploading} className="bg-gradient-admin-accent shadow-admin-glow hover:opacity-90">
+            <span><Upload className="mr-1 h-4 w-4" />{uploading ? "Enviando..." : "Adicionar"}</span>
           </Button>
           <input
             type="file"
@@ -73,32 +84,48 @@ export const GalleryEditor = () => {
         </Label>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {items.map((item) => (
-          <div key={item.id} className="space-y-2 rounded-xl border-2 border-border p-2">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-muted">
-              {item.type === "video" ? (
-                <video src={item.url} className="h-full w-full object-cover" />
-              ) : (
-                <img src={item.url} alt="" className="h-full w-full object-cover" />
-              )}
-              <span className="absolute right-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                {item.type}
-              </span>
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5">
-                <Switch checked={item.blurred} onCheckedChange={(v) => toggleBlur(item.id, v)} />
-                <span className="text-[11px]">Blur</span>
+      {items.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border bg-card/30 p-12 text-center">
+          <ImageIcon className="mx-auto h-10 w-10 text-muted-foreground/50" />
+          <p className="mt-3 text-sm text-muted-foreground">Nenhuma mídia ainda. Adicione fotos e vídeos.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {items.map((item) => (
+            <div key={item.id} className="group overflow-hidden rounded-2xl border border-border bg-gradient-admin-card shadow-admin transition-smooth hover:border-primary/30">
+              <div className="relative aspect-square overflow-hidden bg-muted">
+                {item.type === "video" ? (
+                  <>
+                    <video src={item.url} className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Play className="h-8 w-8 text-white drop-shadow-lg" fill="currentColor" />
+                    </div>
+                  </>
+                ) : (
+                  <img src={item.url} alt="" className="h-full w-full object-cover transition-smooth group-hover:scale-105" />
+                )}
+                <span className="absolute right-2 top-2 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur">
+                  {item.type === "video" ? "Vídeo" : "Foto"}
+                </span>
+                {item.blurred && (
+                  <span className="absolute left-2 top-2 rounded-md bg-primary/90 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-foreground backdrop-blur">
+                    Blur
+                  </span>
+                )}
               </div>
-              <Button variant="ghost" size="icon" onClick={() => remove(item.id)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center justify-between gap-2 p-2.5">
+                <div className="flex items-center gap-1.5">
+                  <Switch checked={item.blurred} onCheckedChange={(v) => toggleBlur(item.id, v)} />
+                  <span className="text-[11px] font-medium">Blur</span>
+                </div>
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" onClick={() => remove(item.id)}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-      {!items.length && <p className="text-center text-sm text-muted-foreground">Nenhuma mídia ainda.</p>}
+          ))}
+        </div>
+      )}
     </div>
   );
 };
