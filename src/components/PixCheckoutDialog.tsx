@@ -76,10 +76,14 @@ export const PixCheckoutDialog = ({ plan, open, onOpenChange }: Props) => {
     if (ph.length < 10) return toast.error("Telefone inválido (com DDD).");
 
     setLoading(true);
+    // If running inside Telegram WebApp, capture chat_id so the bot can DM the VIP link after payment
+    const tgChatId = (window as any)?.Telegram?.WebApp?.initDataUnsafe?.user?.id ?? null;
+
     const { data, error } = await supabase.functions.invoke("paradise-create-pix", {
       body: {
         planId: plan.id,
         customer: { name: name.trim(), phone: ph },
+        telegram_chat_id: tgChatId,
       },
     });
     setLoading(false);
