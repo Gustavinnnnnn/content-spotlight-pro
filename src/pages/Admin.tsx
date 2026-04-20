@@ -169,6 +169,7 @@ const Admin = () => {
               {section === "profile" && <SettingsEditor />}
               {section === "plans" && <PlansEditor />}
               {section === "gallery" && <GalleryEditor />}
+              {section === "telegram" && <TelegramEditor />}
             </main>
           </div>
         </div>
