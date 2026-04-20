@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
     // Locate transaction
     const { data: tx } = await supabase
       .from("transactions")
-      .select("id, status, plan_id")
+      .select("id, status, plan_id, telegram_chat_id")
       .eq("reference", reference)
       .maybeSingle();
 
@@ -53,13 +53,28 @@ Deno.serve(async (req) => {
       })
       .eq("id", tx.id);
 
-    // Track purchase event
+    // Track purchase event + send VIP via Telegram
     if (status === "approved" && tx.status !== "approved") {
       await supabase.from("site_events").insert({
         event_type: "purchase",
         plan_id: tx.plan_id,
         metadata: { reference, amount: body.amount },
       });
+
+      if (tx.telegram_chat_id) {
+        try {
+          await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/telegram-send-vip`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+            },
+            body: JSON.stringify({ chat_id: tx.telegram_chat_id }),
+          });
+        } catch (err) {
+          console.error("Failed to send VIP message:", err);
+        }
+      }
     }
 
     return new Response(JSON.stringify({ received: true }), {

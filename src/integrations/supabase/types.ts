@@ -187,6 +187,93 @@ export type Database = {
           },
         ]
       }
+      telegram_bot_state: {
+        Row: {
+          id: number
+          update_offset: number
+          updated_at: string
+        }
+        Insert: {
+          id: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_messages: {
+        Row: {
+          chat_id: number
+          created_at: string
+          first_name: string | null
+          raw_update: Json
+          text: string | null
+          update_id: number
+          username: string | null
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          first_name?: string | null
+          raw_update: Json
+          text?: string | null
+          update_id: number
+          username?: string | null
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          first_name?: string | null
+          raw_update?: Json
+          text?: string | null
+          update_id?: number
+          username?: string | null
+        }
+        Relationships: []
+      }
+      telegram_settings: {
+        Row: {
+          active: boolean
+          bot_token: string | null
+          button_text: string
+          created_at: string
+          id: string
+          updated_at: string
+          vip_invite_link: string | null
+          vip_message: string
+          webapp_url: string | null
+          welcome_message: string
+        }
+        Insert: {
+          active?: boolean
+          bot_token?: string | null
+          button_text?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          vip_invite_link?: string | null
+          vip_message?: string
+          webapp_url?: string | null
+          welcome_message?: string
+        }
+        Update: {
+          active?: boolean
+          bot_token?: string | null
+          button_text?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          vip_invite_link?: string | null
+          vip_message?: string
+          webapp_url?: string | null
+          welcome_message?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
@@ -205,6 +292,7 @@ export type Database = {
           raw_payload: Json | null
           reference: string
           status: string
+          telegram_chat_id: number | null
           updated_at: string
         }
         Insert: {
@@ -224,6 +312,7 @@ export type Database = {
           raw_payload?: Json | null
           reference: string
           status?: string
+          telegram_chat_id?: number | null
           updated_at?: string
         }
         Update: {
@@ -243,6 +332,7 @@ export type Database = {
           raw_payload?: Json | null
           reference?: string
           status?: string
+          telegram_chat_id?: number | null
           updated_at?: string
         }
         Relationships: [

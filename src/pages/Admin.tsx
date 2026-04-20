@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles, Bot } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -11,9 +11,10 @@ import { GalleryEditor } from "@/components/admin/GalleryEditor";
 import { DashboardEditor } from "@/components/admin/DashboardEditor";
 import { SalesEditor } from "@/components/admin/SalesEditor";
 import { CustomersEditor } from "@/components/admin/CustomersEditor";
+import { TelegramEditor } from "@/components/admin/TelegramEditor";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "gallery";
+type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "gallery" | "telegram";
 
 const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, hint: "Visão geral" },
@@ -22,6 +23,7 @@ const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint
   { id: "profile", label: "Perfil", icon: User, hint: "Identidade do clube" },
   { id: "plans", label: "Planos", icon: Tag, hint: "Preços e ofertas" },
   { id: "gallery", label: "Galeria", icon: ImageIcon, hint: "Fotos e vídeos" },
+  { id: "telegram", label: "Telegram", icon: Bot, hint: "Bot e canal VIP" },
 ];
 
 const NavList = ({ section, onSelect }: { section: Section; onSelect: (id: Section) => void }) => (
@@ -167,6 +169,7 @@ const Admin = () => {
               {section === "profile" && <SettingsEditor />}
               {section === "plans" && <PlansEditor />}
               {section === "gallery" && <GalleryEditor />}
+              {section === "telegram" && <TelegramEditor />}
             </main>
           </div>
         </div>

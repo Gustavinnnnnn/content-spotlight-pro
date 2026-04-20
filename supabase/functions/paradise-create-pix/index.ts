@@ -151,6 +151,7 @@ Deno.serve(async (req) => {
       customer_email: email,
       customer_document: document,
       customer_phone: phone,
+      telegram_chat_id: typeof body.telegram_chat_id === "number" ? body.telegram_chat_id : null,
       qr_code: data.qr_code,
       qr_code_base64: data.qr_code_base64,
       expires_at: data.expires_at ? new Date(data.expires_at.replace(" ", "T")).toISOString() : null,
