@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, MousePointerClick, ShoppingCart, TrendingUp } from "lucide-react";
+import { Eye, MousePointerClick, ShoppingCart, TrendingUp, Loader2 } from "lucide-react";
 
 interface EventRow {
   event_type: string;
@@ -29,9 +29,6 @@ export const DashboardEditor = () => {
     load();
   }, []);
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const last7 = new Date(Date.now() - 7 * 86400000);
-
   const count = (type: string, since?: Date) =>
     events.filter(e => e.event_type === type && (!since || new Date(e.created_at) >= since)).length;
 
@@ -45,7 +42,6 @@ export const DashboardEditor = () => {
     clicks: events.filter(e => e.event_type === "plan_click" && e.plan_id === p.id).length,
   }));
 
-  // Daily series last 7 days
   const days: { label: string; views: number; clicks: number }[] = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
@@ -62,61 +58,68 @@ export const DashboardEditor = () => {
   }
   const maxBar = Math.max(1, ...days.map(d => Math.max(d.views, d.clicks)));
 
-  if (loading) return <div className="text-sm text-muted-foreground">Carregando dashboard...</div>;
+  if (loading) return <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Carregando dashboard...</div>;
 
   const cards = [
-    { icon: Eye, label: "Visitas (30d)", value: views, color: "text-primary" },
-    { icon: MousePointerClick, label: "Cliques nos planos", value: clicks, color: "text-primary-deep" },
-    { icon: ShoppingCart, label: "Compras", value: purchases, color: "text-primary" },
-    { icon: TrendingUp, label: "Taxa conversão", value: `${ctr}%`, color: "text-primary-deep" },
+    { icon: Eye, label: "Visitas (30d)", value: views, tint: "from-sky-500/20 to-sky-500/0", icon_tint: "bg-sky-500/15 text-sky-300" },
+    { icon: MousePointerClick, label: "Cliques nos planos", value: clicks, tint: "from-violet-500/20 to-violet-500/0", icon_tint: "bg-violet-500/15 text-violet-300" },
+    { icon: ShoppingCart, label: "Compras", value: purchases, tint: "from-emerald-500/20 to-emerald-500/0", icon_tint: "bg-emerald-500/15 text-emerald-300" },
+    { icon: TrendingUp, label: "Taxa conversão", value: `${ctr}%`, tint: "from-orange-500/25 to-orange-500/0", icon_tint: "bg-orange-500/15 text-orange-300" },
   ];
 
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {cards.map(c => (
-          <div key={c.label} className="rounded-2xl bg-card p-4 shadow-card">
-            <c.icon className={`h-5 w-5 ${c.color}`} />
-            <div className="mt-2 text-2xl font-extrabold">{c.value}</div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{c.label}</div>
+          <div key={c.label} className="relative overflow-hidden rounded-2xl border border-border bg-gradient-admin-card p-4 shadow-admin">
+            <div className={`absolute inset-0 bg-gradient-to-br ${c.tint} opacity-60`} />
+            <div className="relative">
+              <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${c.icon_tint}`}>
+                <c.icon className="h-4 w-4" />
+              </div>
+              <div className="mt-3 text-2xl font-extrabold tracking-tight">{c.value}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{c.label}</div>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="rounded-2xl bg-card p-5 shadow-card">
-        <h3 className="mb-4 text-sm font-bold">Últimos 7 dias</h3>
-        <div className="flex h-40 items-end gap-2">
+      <div className="rounded-2xl border border-border bg-gradient-admin-card p-5 shadow-admin">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-bold">Últimos 7 dias</h3>
+          <div className="flex gap-3 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded bg-primary/40" /> Visitas</span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded bg-gradient-admin-accent" /> Cliques</span>
+          </div>
+        </div>
+        <div className="flex h-44 items-end gap-2">
           {days.map((d, i) => (
-            <div key={i} className="flex flex-1 flex-col items-center gap-1">
-              <div className="flex w-full flex-1 items-end gap-0.5">
-                <div className="flex-1 rounded-t bg-primary/30" style={{ height: `${(d.views / maxBar) * 100}%` }} title={`${d.views} visitas`} />
-                <div className="flex-1 rounded-t bg-primary" style={{ height: `${(d.clicks / maxBar) * 100}%` }} title={`${d.clicks} cliques`} />
+            <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
+              <div className="flex w-full flex-1 items-end gap-1">
+                <div className="flex-1 rounded-t-md bg-primary/30 transition-smooth hover:bg-primary/50" style={{ height: `${(d.views / maxBar) * 100}%` }} title={`${d.views} visitas`} />
+                <div className="flex-1 rounded-t-md bg-gradient-admin-accent shadow-admin-glow" style={{ height: `${(d.clicks / maxBar) * 100}%` }} title={`${d.clicks} cliques`} />
               </div>
-              <div className="text-[10px] text-muted-foreground">{d.label}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{d.label}</div>
             </div>
           ))}
         </div>
-        <div className="mt-3 flex justify-center gap-4 text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded bg-primary/30" /> Visitas</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded bg-primary" /> Cliques</span>
-        </div>
       </div>
 
-      <div className="rounded-2xl bg-card p-5 shadow-card">
-        <h3 className="mb-3 text-sm font-bold">Cliques por plano (30d)</h3>
+      <div className="rounded-2xl border border-border bg-gradient-admin-card p-5 shadow-admin">
+        <h3 className="mb-4 text-sm font-bold">Cliques por plano (30d)</h3>
         {planClicks.length === 0 ? (
           <p className="text-sm text-muted-foreground">Nenhum plano cadastrado.</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {planClicks.map(p => {
               const max = Math.max(1, ...planClicks.map(x => x.clicks));
               return (
                 <div key={p.name} className="flex items-center gap-3">
-                  <span className="w-24 text-xs font-medium">{p.name}</span>
-                  <div className="relative h-6 flex-1 overflow-hidden rounded-md bg-muted">
-                    <div className="h-full bg-gradient-primary" style={{ width: `${(p.clicks / max) * 100}%` }} />
+                  <span className="w-28 truncate text-xs font-medium">{p.name}</span>
+                  <div className="relative h-7 flex-1 overflow-hidden rounded-lg bg-muted">
+                    <div className="h-full bg-gradient-admin-accent transition-all" style={{ width: `${(p.clicks / max) * 100}%` }} />
                   </div>
-                  <span className="w-10 text-right text-sm font-bold">{p.clicks}</span>
+                  <span className="w-10 text-right text-sm font-bold tabular-nums">{p.clicks}</span>
                 </div>
               );
             })}
