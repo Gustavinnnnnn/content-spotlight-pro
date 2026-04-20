@@ -47,6 +47,21 @@
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+    /* Admin (dark premium) */
+    --admin-bg: 24 18% 7%;
+    --admin-surface: 24 16% 11%;
+    --admin-surface-2: 24 14% 14%;
+    --admin-border: 24 12% 20%;
+    --admin-foreground: 30 25% 96%;
+    --admin-muted: 30 8% 65%;
+    --admin-accent: 20 95% 58%;
+    --admin-accent-soft: 20 90% 18%;
+    --gradient-admin-card: linear-gradient(140deg, hsl(24 16% 13%) 0%, hsl(24 16% 10%) 100%);
+    --gradient-admin-accent: linear-gradient(135deg, hsl(30 100% 60%) 0%, hsl(14 90% 50%) 100%);
+    --gradient-admin-bg: radial-gradient(ellipse at top, hsl(24 30% 12%) 0%, hsl(24 18% 6%) 60%);
+    --shadow-admin: 0 10px 40px -12px hsl(0 0% 0% / 0.5);
+    --shadow-admin-glow: 0 0 0 1px hsl(20 95% 58% / 0.15), 0 12px 40px -10px hsl(20 95% 50% / 0.35);
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 20 15% 20%;
     --sidebar-primary: 20 95% 55%;
@@ -93,8 +108,36 @@
   .bg-gradient-primary { background: var(--gradient-primary); }
   .bg-gradient-warm { background: var(--gradient-warm); }
   .bg-gradient-banner { background: var(--gradient-banner); }
+  .bg-gradient-admin-card { background: var(--gradient-admin-card); }
+  .bg-gradient-admin-accent { background: var(--gradient-admin-accent); }
+  .bg-gradient-admin-bg { background: var(--gradient-admin-bg); }
   .shadow-glow { box-shadow: var(--shadow-glow); }
   .shadow-card { box-shadow: var(--shadow-card); }
   .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-admin { box-shadow: var(--shadow-admin); }
+  .shadow-admin-glow { box-shadow: var(--shadow-admin-glow); }
   .transition-smooth { transition: var(--transition-smooth); }
+}
+
+/* Admin scope: applies dark premium tokens to children */
+.admin-scope {
+  background: var(--gradient-admin-bg);
+  color: hsl(var(--admin-foreground));
+  --background: var(--admin-bg);
+  --foreground: var(--admin-foreground);
+  --card: var(--admin-surface);
+  --card-foreground: var(--admin-foreground);
+  --popover: var(--admin-surface);
+  --popover-foreground: var(--admin-foreground);
+  --muted: var(--admin-surface-2);
+  --muted-foreground: var(--admin-muted);
+  --border: var(--admin-border);
+  --input: var(--admin-border);
+  --secondary: var(--admin-surface-2);
+  --secondary-foreground: var(--admin-foreground);
+  --accent: var(--admin-accent-soft);
+  --accent-foreground: var(--admin-foreground);
+  --primary: var(--admin-accent);
+  --primary-foreground: 0 0% 100%;
+  --ring: var(--admin-accent);
 }
