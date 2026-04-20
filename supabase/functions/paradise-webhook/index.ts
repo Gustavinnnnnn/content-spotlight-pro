@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
     // Locate transaction
     const { data: tx } = await supabase
       .from("transactions")
-      .select("id, status, plan_id")
+      .select("id, status, plan_id, telegram_chat_id")
       .eq("reference", reference)
       .maybeSingle();
 
