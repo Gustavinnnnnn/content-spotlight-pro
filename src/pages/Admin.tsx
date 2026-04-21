@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles, Bot } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles, Bot, Receipt } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -12,9 +12,10 @@ import { DashboardEditor } from "@/components/admin/DashboardEditor";
 import { SalesEditor } from "@/components/admin/SalesEditor";
 import { CustomersEditor } from "@/components/admin/CustomersEditor";
 import { TelegramEditor } from "@/components/admin/TelegramEditor";
+import { FeesEditor } from "@/components/admin/FeesEditor";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "gallery" | "telegram";
+type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "fees" | "gallery" | "telegram";
 
 const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, hint: "Visão geral" },
@@ -22,6 +23,7 @@ const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint
   { id: "customers", label: "Clientes", icon: Users, hint: "Pagos e pendentes" },
   { id: "profile", label: "Perfil", icon: User, hint: "Identidade do clube" },
   { id: "plans", label: "Planos", icon: Tag, hint: "Preços e ofertas" },
+  { id: "fees", label: "Taxas", icon: Receipt, hint: "Etapas extras" },
   { id: "gallery", label: "Galeria", icon: ImageIcon, hint: "Fotos e vídeos" },
   { id: "telegram", label: "Telegram", icon: Bot, hint: "Bot e canal VIP" },
 ];
@@ -168,6 +170,7 @@ const Admin = () => {
               {section === "customers" && <CustomersEditor />}
               {section === "profile" && <SettingsEditor />}
               {section === "plans" && <PlansEditor />}
+              {section === "fees" && <FeesEditor />}
               {section === "gallery" && <GalleryEditor />}
               {section === "telegram" && <TelegramEditor />}
             </main>
