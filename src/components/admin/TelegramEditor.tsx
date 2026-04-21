@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Send, Bot, Link2, MessageSquare, Crown, KeyRound, Globe, Power } from "lucide-react";
+import { Send, Bot, Link2, MessageSquare, Crown, KeyRound, Globe, Power, Image as ImageIcon, Video, Upload, Trash2 } from "lucide-react";
 
 interface TgSettings {
   id: string;
@@ -17,6 +17,8 @@ interface TgSettings {
   vip_invite_link: string | null;
   vip_message: string;
   active: boolean;
+  welcome_media_url: string | null;
+  welcome_media_type: string | null;
 }
 
 export const TelegramEditor = () => {
@@ -30,6 +32,26 @@ export const TelegramEditor = () => {
     });
   }, []);
 
+  const uploadWelcomeMedia = async (file: File) => {
+    if (!s) return;
+    const mediaType = file.type.startsWith("video/") ? "video" : "photo";
+    const path = `telegram-welcome-${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from("club-assets").upload(path, file, { upsert: true });
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    const { data } = supabase.storage.from("club-assets").getPublicUrl(path);
+    setS({ ...s, welcome_media_url: data.publicUrl, welcome_media_type: mediaType });
+    toast.success(mediaType === "video" ? "Vídeo adicionado" : "Foto adicionada");
+  };
+
+  const clearWelcomeMedia = () => {
+    if (!s) return;
+    setS({ ...s, welcome_media_url: null, welcome_media_type: null });
+  };
+
   const save = async () => {
     if (!s) return;
     setSaving(true);
@@ -41,6 +63,8 @@ export const TelegramEditor = () => {
       vip_invite_link: s.vip_invite_link,
       vip_message: s.vip_message,
       active: s.active,
+      welcome_media_url: s.welcome_media_url,
+      welcome_media_type: s.welcome_media_type,
     }).eq("id", s.id);
     setSaving(false);
     if (error) toast.error(error.message);
@@ -165,10 +189,57 @@ export const TelegramEditor = () => {
           </div>
         </div>
 
+        <div className="space-y-2 rounded-xl border border-border bg-card/30 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground">Mídia de boas-vindas</Label>
+              <p className="mt-1 text-[11px] text-muted-foreground">Envie uma foto ou vídeo para aparecer acima da mensagem e do botão.</p>
+            </div>
+            {s.welcome_media_url && (
+              <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" onClick={clearWelcomeMedia}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+
+          <Label className="cursor-pointer">
+            <Button asChild type="button" variant="secondary" size="sm">
+              <span>
+                <Upload className="h-4 w-4" />
+                {s.welcome_media_url ? "Trocar mídia" : "Enviar foto ou vídeo"}
+              </span>
+            </Button>
+            <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadWelcomeMedia(e.target.files[0])} />
+          </Label>
+
+          {s.welcome_media_url && (
+            <div className="overflow-hidden rounded-xl border border-border bg-muted">
+              {s.welcome_media_type === "video" ? (
+                <video src={s.welcome_media_url} controls muted playsInline className="max-h-64 w-full bg-black object-contain" />
+              ) : (
+                <img src={s.welcome_media_url} alt="Mídia de boas-vindas" className="max-h-64 w-full object-cover" />
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Preview */}
         <div className="rounded-xl border border-border bg-card/30 p-4">
           <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Pré-visualização</div>
           <div className="mt-2 rounded-lg bg-card p-3 text-sm">
+            {s.welcome_media_url && (
+              <div className="mb-3 overflow-hidden rounded-lg border border-border bg-muted">
+                {s.welcome_media_type === "video" ? (
+                  <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
+                    <Video className="h-3.5 w-3.5 text-primary" /> Vídeo anexado
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
+                    <ImageIcon className="h-3.5 w-3.5 text-primary" /> Foto anexada
+                  </div>
+                )}
+              </div>
+            )}
             <div className="whitespace-pre-wrap">{s.welcome_message}</div>
             <button className="mt-3 w-full rounded-md bg-gradient-admin-accent px-3 py-2 text-xs font-bold text-white shadow-admin-glow">
               {s.button_text}
