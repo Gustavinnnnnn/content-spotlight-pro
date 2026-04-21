@@ -71,10 +71,9 @@ export const SettingsEditor = () => {
           ) : (
             <div className="h-full w-full bg-gradient-admin-accent opacity-30" />
           )}
-          <Label className="absolute right-3 top-3 cursor-pointer">
-            <Button asChild size="sm" variant="secondary" className="bg-black/60 text-white backdrop-blur hover:bg-black/80">
-              <span><Upload className="mr-1 h-3.5 w-3.5" /> Trocar banner</span>
-            </Button>
+          <Label className="absolute right-3 top-3 inline-flex cursor-pointer items-center gap-1 rounded-md bg-card/80 px-3 py-2 text-xs font-medium text-card-foreground shadow-soft backdrop-blur transition-smooth hover:bg-card">
+            <Upload className="h-3.5 w-3.5" />
+            <span>Trocar banner</span>
             <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0], "banner_url")} />
           </Label>
         </div>

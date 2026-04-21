@@ -202,13 +202,9 @@ export const TelegramEditor = () => {
             )}
           </div>
 
-          <Label className="cursor-pointer">
-            <Button asChild type="button" variant="secondary" size="sm">
-              <span>
-                <Upload className="h-4 w-4" />
-                {s.welcome_media_url ? "Trocar mídia" : "Enviar foto ou vídeo"}
-              </span>
-            </Button>
+          <Label className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground transition-smooth hover:bg-secondary/80">
+            <Upload className="h-4 w-4" />
+            <span>{s.welcome_media_url ? "Trocar mídia" : "Enviar foto ou vídeo"}</span>
             <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadWelcomeMedia(e.target.files[0])} />
           </Label>
 
