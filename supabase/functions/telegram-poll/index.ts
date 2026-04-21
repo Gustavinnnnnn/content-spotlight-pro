@@ -43,6 +43,8 @@ Deno.serve(async (req) => {
   const welcome = settings.welcome_message as string;
   const buttonText = settings.button_text as string;
   const webappUrl = settings.webapp_url as string | null;
+  const welcomeMediaUrl = settings.welcome_media_url as string | null;
+  const welcomeMediaType = settings.welcome_media_type as string | null;
 
   // Read offset
   const { data: state } = await supabase
@@ -97,11 +99,29 @@ Deno.serve(async (req) => {
           const keyboard = webappUrl
             ? { inline_keyboard: [[{ text: buttonText, web_app: { url: webappUrl } }]] }
             : { inline_keyboard: [[{ text: buttonText, url: webappUrl || "https://t.me" }]] };
-          await tg(token, "sendMessage", {
-            chat_id: row.chat_id,
-            text: welcome,
-            reply_markup: keyboard,
-          });
+
+          if (welcomeMediaUrl && welcomeMediaType === "photo") {
+            await tg(token, "sendPhoto", {
+              chat_id: row.chat_id,
+              photo: welcomeMediaUrl,
+              caption: welcome,
+              reply_markup: keyboard,
+            });
+          } else if (welcomeMediaUrl && welcomeMediaType === "video") {
+            await tg(token, "sendVideo", {
+              chat_id: row.chat_id,
+              video: welcomeMediaUrl,
+              caption: welcome,
+              reply_markup: keyboard,
+              supports_streaming: true,
+            });
+          } else {
+            await tg(token, "sendMessage", {
+              chat_id: row.chat_id,
+              text: welcome,
+              reply_markup: keyboard,
+            });
+          }
         }
       }
     }

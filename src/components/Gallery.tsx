@@ -29,15 +29,30 @@ export const Gallery = ({ items }: { items: MediaItem[] }) => {
             key={item.id}
             className="group relative aspect-square cursor-pointer overflow-hidden rounded-xl bg-muted shadow-soft ring-1 ring-border/40 transition-smooth hover:shadow-glow hover:ring-primary/40"
           >
-            <img
-              src={src}
-              alt={item.title || "Prévia"}
-              loading="lazy"
-              className={cn(
-                "h-full w-full object-cover transition-smooth duration-500 group-hover:scale-110",
-                item.blurred && "scale-110 blur-lg"
-              )}
-            />
+            {item.type === "video" ? (
+              <video
+                src={item.url}
+                muted
+                loop
+                playsInline
+                autoPlay={!item.blurred}
+                preload="metadata"
+                className={cn(
+                  "h-full w-full object-cover transition-smooth duration-500 group-hover:scale-110",
+                  item.blurred && "scale-110 blur-lg"
+                )}
+              />
+            ) : (
+              <img
+                src={src}
+                alt={item.title || "Prévia"}
+                loading="lazy"
+                className={cn(
+                  "h-full w-full object-cover transition-smooth duration-500 group-hover:scale-110",
+                  item.blurred && "scale-110 blur-lg"
+                )}
+              />
+            )}
 
             {/* Overlay degradê inferior para legibilidade */}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-80" />

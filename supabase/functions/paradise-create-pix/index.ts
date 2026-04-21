@@ -10,6 +10,7 @@ const PARADISE_URL = "https://multi.paradisepags.com/api/v1/transaction.php";
 interface Body {
   planId: string;
   customer: { name: string; phone: string; email?: string; document?: string };
+  telegram_chat_id?: number | null;
 }
 
 const onlyDigits = (s: string) => (s || "").replace(/\D/g, "");

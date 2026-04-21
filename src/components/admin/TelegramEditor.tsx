@@ -104,7 +104,7 @@ export const TelegramEditor = () => {
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-extrabold">Bot do Telegram</h2>
-              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${s.active ? "bg-emerald-500/20 text-emerald-400" : "bg-muted text-muted-foreground"}`}>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${s.active ? "bg-primary/15 text-primary" : "bg-muted text-muted-foreground"}`}>
                 {s.active ? "Ativo" : "Inativo"}
               </span>
             </div>
@@ -113,7 +113,7 @@ export const TelegramEditor = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Power className={`h-4 w-4 ${s.active ? "text-emerald-400" : "text-muted-foreground"}`} />
+            <Power className={`h-4 w-4 ${s.active ? "text-primary" : "text-muted-foreground"}`} />
             <Switch checked={s.active} onCheckedChange={(v) => setS({ ...s, active: v })} />
           </div>
         </div>
@@ -196,7 +196,7 @@ export const TelegramEditor = () => {
               <p className="mt-1 text-[11px] text-muted-foreground">Envie uma foto ou vídeo para aparecer acima da mensagem e do botão.</p>
             </div>
             {s.welcome_media_url && (
-              <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300" onClick={clearWelcomeMedia}>
+              <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={clearWelcomeMedia}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             )}
