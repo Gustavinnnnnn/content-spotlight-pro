@@ -73,11 +73,15 @@ export const SalesEditor = () => {
       });
 
       const payload = subscription.toJSON();
-      const { error: saveError } = await supabase.from("push_subscriptions").upsert({
-        endpoint: payload.endpoint,
-        subscription: payload,
-        user_agent: navigator.userAgent,
-      }, { onConflict: "endpoint" });
+      if (!payload.endpoint) throw new Error("Endpoint de push não retornado pelo navegador");
+
+      const { error: saveError } = await supabase.from("push_subscriptions").upsert([
+        {
+          endpoint: payload.endpoint,
+          subscription: payload as never,
+          user_agent: navigator.userAgent,
+        },
+      ], { onConflict: "endpoint" });
 
       if (saveError) throw saveError;
       toast.success("Notificações ativadas neste aparelho");
