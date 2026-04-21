@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, TrendingUp, CheckCircle2, Clock, DollarSign, Bell, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { browserNotificationPermission, browserNotificationsSupported, requestBrowserNotificationPermission, showBrowserNotification } from "@/lib/browser-notifications";
 
 interface Tx {
   id: string;
@@ -43,50 +44,21 @@ export const SalesEditor = () => {
   const [testingPush, setTestingPush] = useState(false);
 
   const subscribePush = async () => {
-    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      toast.error("Push não é suportado neste aparelho");
+    if (!browserNotificationsSupported()) {
+      toast.error("Notificação do navegador não é suportada neste aparelho");
       return;
     }
 
     setSubscribing(true);
     try {
-      const permission = await Notification.requestPermission();
+      const permission = await requestBrowserNotificationPermission();
       if (permission !== "granted") {
-        toast.error("Permissão de notificação negada");
+        toast.error("Permissão de notificação negada no Chrome");
         return;
       }
-
-      const registration = await navigator.serviceWorker.ready;
-      const { data, error } = await supabase.functions.invoke("push-public-key");
-      if (error || !data?.publicKey) throw new Error(error?.message || "Chave pública indisponível");
-
-      const base64ToUint8Array = (base64String: string) => {
-        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-        const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-        const rawData = window.atob(base64);
-        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-      };
-
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: base64ToUint8Array(data.publicKey),
-      });
-
-      const payload = subscription.toJSON();
-      if (!payload.endpoint) throw new Error("Endpoint de push não retornado pelo navegador");
-
-      const { error: saveError } = await supabase.from("push_subscriptions").upsert([
-        {
-          endpoint: payload.endpoint,
-          subscription: payload as never,
-          user_agent: navigator.userAgent,
-        },
-      ], { onConflict: "endpoint" });
-
-      if (saveError) throw saveError;
-      toast.success("Notificações ativadas neste aparelho");
+      toast.success("Notificações do Chrome ativadas neste navegador");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao ativar push");
+      toast.error(err instanceof Error ? err.message : "Erro ao ativar notificação");
     } finally {
       setSubscribing(false);
     }
@@ -94,16 +66,19 @@ export const SalesEditor = () => {
 
   const sendTestPush = async () => {
     setTestingPush(true);
-    const { error } = await supabase.functions.invoke("send-sale-push", {
-      body: {
-        title: "Venda aprovada",
-        body: "Teste manual de notificação no seu aparelho.",
-        data: { url: "/admin", type: "sale-approved-test" },
-      },
-    });
+    const permission = browserNotificationPermission();
     setTestingPush(false);
-    if (error) toast.error(error.message);
-    else toast.success("Notificação de teste enviada");
+    if (permission !== "granted") {
+      toast.error("Ative a permissão primeiro");
+      return;
+    }
+
+    showBrowserNotification({
+      title: "Venda aprovada",
+      body: "Teste manual de notificação no Chrome.",
+      url: "/admin",
+    });
+    toast.success("Notificação de teste enviada");
   };
 
   useEffect(() => {
@@ -126,6 +101,13 @@ export const SalesEditor = () => {
         const prev = payload.old as Partial<Tx> | null;
         if (next?.status === "approved" && prev?.status !== "approved") {
           toast.success(`Venda aprovada${next.customer_name ? `: ${next.customer_name}` : ""}`);
+            if (browserNotificationPermission() === "granted") {
+              showBrowserNotification({
+                title: "Venda aprovada",
+                body: `${next.customer_name || "Cliente"} · ${formatBRL(next.amount || 0)}`,
+                url: "/admin",
+              });
+            }
         }
       })
       .subscribe();
@@ -150,10 +132,10 @@ export const SalesEditor = () => {
     <div className="space-y-5">
       <div className="flex flex-wrap gap-3 rounded-2xl border border-border bg-gradient-admin-card p-4 shadow-admin">
         <Button type="button" onClick={subscribePush} disabled={subscribing} className="bg-gradient-admin-accent shadow-admin-glow hover:opacity-90">
-          <Bell className="h-4 w-4" /> {subscribing ? "Ativando..." : "Ativar notificações neste aparelho"}
+          <Bell className="h-4 w-4" /> {subscribing ? "Ativando..." : "Ativar notificação no Chrome"}
         </Button>
         <Button type="button" variant="secondary" onClick={sendTestPush} disabled={testingPush}>
-          <BellRing className="h-4 w-4" /> {testingPush ? "Enviando teste..." : "Enviar teste"}
+          <BellRing className="h-4 w-4" /> {testingPush ? "Enviando teste..." : "Testar notificação"}
         </Button>
       </div>
 
