@@ -73,11 +73,16 @@ export const SalesEditor = () => {
       return;
     }
 
-    showBrowserNotification({
+    const result = showBrowserNotification({
       title: "Venda aprovada",
       body: "Teste manual de notificação no Chrome.",
       url: "/admin",
     });
+    if (!result) {
+      toast.error("Não foi possível disparar a notificação neste navegador");
+      return;
+    }
+
     toast.success("Notificação de teste enviada");
   };
 
