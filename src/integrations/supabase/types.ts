@@ -155,6 +155,33 @@ export type Database = {
         }
         Relationships: []
       }
+      push_subscriptions: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: string
+          subscription: Json
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: string
+          subscription: Json
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: string
+          subscription?: Json
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       site_events: {
         Row: {
           created_at: string
@@ -246,6 +273,8 @@ export type Database = {
           vip_invite_link: string | null
           vip_message: string
           webapp_url: string | null
+          welcome_media_type: string | null
+          welcome_media_url: string | null
           welcome_message: string
         }
         Insert: {
@@ -258,6 +287,8 @@ export type Database = {
           vip_invite_link?: string | null
           vip_message?: string
           webapp_url?: string | null
+          welcome_media_type?: string | null
+          welcome_media_url?: string | null
           welcome_message?: string
         }
         Update: {
@@ -270,6 +301,8 @@ export type Database = {
           vip_invite_link?: string | null
           vip_message?: string
           webapp_url?: string | null
+          welcome_media_type?: string | null
+          welcome_media_url?: string | null
           welcome_message?: string
         }
         Relationships: []
