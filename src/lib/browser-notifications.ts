@@ -16,29 +16,33 @@ export const showBrowserNotification = ({
   title,
   body,
   url,
+  icon,
+  badge,
+  image,
 }: {
   title: string;
   body: string;
   url?: string;
+  icon?: string;
+  badge?: string;
+  image?: string;
 }) => {
   if (!browserNotificationsSupported() || Notification.permission !== "granted") return null;
 
+  const options = {
+    body,
+    icon,
+    badge,
+    image,
+    data: { url },
+    tag: url || title,
+  };
+
   if (canUseServiceWorkerNotifications()) {
     navigator.serviceWorker.ready
-      .then((registration) => registration.showNotification(title, {
-        body,
-        icon: "/favicon.ico",
-        badge: "/favicon.ico",
-        data: { url },
-        tag: url || title,
-      }))
+      .then((registration) => registration.showNotification(title, options))
       .catch(() => {
-        const fallback = new Notification(title, {
-          body,
-          icon: "/favicon.ico",
-          badge: "/favicon.ico",
-          tag: url || title,
-        });
+        const fallback = new Notification(title, options);
 
         if (url) {
           fallback.onclick = () => {
@@ -51,12 +55,7 @@ export const showBrowserNotification = ({
     return true;
   }
 
-  const notification = new Notification(title, {
-    body,
-    icon: "/favicon.ico",
-    badge: "/favicon.ico",
-    tag: url || title,
-  });
+  const notification = new Notification(title, options);
 
   if (url) {
     notification.onclick = () => {

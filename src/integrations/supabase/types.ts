@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notification_settings: {
+        Row: {
+          created_at: string
+          fee_body_template: string
+          fee_icon_url: string | null
+          fee_title: string
+          id: string
+          sale_body_template: string
+          sale_icon_url: string | null
+          sale_title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fee_body_template?: string
+          fee_icon_url?: string | null
+          fee_title?: string
+          id?: string
+          sale_body_template?: string
+          sale_icon_url?: string | null
+          sale_title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fee_body_template?: string
+          fee_icon_url?: string | null
+          fee_title?: string
+          id?: string
+          sale_body_template?: string
+          sale_icon_url?: string | null
+          sale_title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       club_settings: {
         Row: {
           avatar_url: string | null
