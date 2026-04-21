@@ -137,6 +137,39 @@ export type Database = {
         }
         Relationships: []
       }
+      post_purchase_fees: {
+        Row: {
+          active: boolean
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -265,10 +298,13 @@ export type Database = {
       telegram_settings: {
         Row: {
           active: boolean
+          admin_chat_id: number | null
           bot_token: string | null
           button_text: string
           created_at: string
           id: string
+          sale_notification_message: string
+          sale_notifications_enabled: boolean
           updated_at: string
           vip_invite_link: string | null
           vip_message: string
@@ -279,10 +315,13 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          admin_chat_id?: number | null
           bot_token?: string | null
           button_text?: string
           created_at?: string
           id?: string
+          sale_notification_message?: string
+          sale_notifications_enabled?: boolean
           updated_at?: string
           vip_invite_link?: string | null
           vip_message?: string
@@ -293,10 +332,13 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          admin_chat_id?: number | null
           bot_token?: string | null
           button_text?: string
           created_at?: string
           id?: string
+          sale_notification_message?: string
+          sale_notifications_enabled?: boolean
           updated_at?: string
           vip_invite_link?: string | null
           vip_message?: string
@@ -306,6 +348,81 @@ export type Database = {
           welcome_message?: string
         }
         Relationships: []
+      }
+      transaction_fees: {
+        Row: {
+          amount: number
+          created_at: string
+          expires_at: string | null
+          fee_description: string | null
+          fee_id: string | null
+          fee_name: string
+          id: string
+          paid_at: string | null
+          paradise_transaction_id: string | null
+          qr_code: string | null
+          qr_code_base64: string | null
+          raw_payload: Json | null
+          reference: string
+          sort_order: number
+          status: string
+          transaction_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          expires_at?: string | null
+          fee_description?: string | null
+          fee_id?: string | null
+          fee_name: string
+          id?: string
+          paid_at?: string | null
+          paradise_transaction_id?: string | null
+          qr_code?: string | null
+          qr_code_base64?: string | null
+          raw_payload?: Json | null
+          reference: string
+          sort_order?: number
+          status?: string
+          transaction_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          expires_at?: string | null
+          fee_description?: string | null
+          fee_id?: string | null
+          fee_name?: string
+          id?: string
+          paid_at?: string | null
+          paradise_transaction_id?: string | null
+          qr_code?: string | null
+          qr_code_base64?: string | null
+          raw_payload?: Json | null
+          reference?: string
+          sort_order?: number
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_fees_fee_id_fkey"
+            columns: ["fee_id"]
+            isOneToOne: false
+            referencedRelation: "post_purchase_fees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_fees_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
