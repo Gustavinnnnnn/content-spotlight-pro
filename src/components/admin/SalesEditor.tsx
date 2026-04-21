@@ -292,7 +292,7 @@ export const SalesEditor = () => {
             <div className="space-y-3 rounded-xl border border-border bg-card/30 p-4">
               <div>
                 <h4 className="text-sm font-semibold">Venda aprovada</h4>
-                <p className="text-[11px] text-muted-foreground">Variáveis: {{customer_name}}, {{amount}}, {{plan_name}}, {{reference}}</p>
+                <p className="text-[11px] text-muted-foreground">{"Variáveis: {{customer_name}}, {{amount}}, {{plan_name}}, {{reference}}"}</p>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs uppercase tracking-wider text-muted-foreground">Título</Label>
@@ -327,7 +327,7 @@ export const SalesEditor = () => {
             <div className="space-y-3 rounded-xl border border-border bg-card/30 p-4">
               <div>
                 <h4 className="text-sm font-semibold">Taxa aprovada</h4>
-                <p className="text-[11px] text-muted-foreground">Variáveis: {{fee_name}}, {{amount}}</p>
+                <p className="text-[11px] text-muted-foreground">{"Variáveis: {{fee_name}}, {{amount}}"}</p>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs uppercase tracking-wider text-muted-foreground">Título</Label>
