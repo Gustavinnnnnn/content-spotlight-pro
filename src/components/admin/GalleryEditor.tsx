@@ -31,7 +31,11 @@ export const GalleryEditor = () => {
     setUploading(true);
     const isVideo = file.type.startsWith("video/");
     const path = `${Date.now()}-${file.name}`;
-    const { error: upErr } = await supabase.storage.from("gallery").upload(path, file);
+    const { error: upErr } = await supabase.storage.from("gallery").upload(path, file, {
+      cacheControl: "3600",
+      contentType: file.type || (isVideo ? "video/mp4" : "image/jpeg"),
+      upsert: true,
+    });
     if (upErr) { toast.error(upErr.message); setUploading(false); return; }
     const { data } = supabase.storage.from("gallery").getPublicUrl(path);
     const { error } = await supabase.from("media_items").insert({
@@ -95,7 +99,7 @@ export const GalleryEditor = () => {
               <div className="relative aspect-square overflow-hidden bg-muted">
                 {item.type === "video" ? (
                   <>
-                    <video src={item.url} className="h-full w-full object-cover" />
+                    <video src={item.url} className="h-full w-full object-cover" controls muted playsInline preload="metadata" />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                       <Play className="h-8 w-8 text-white drop-shadow-lg" fill="currentColor" />
                     </div>
