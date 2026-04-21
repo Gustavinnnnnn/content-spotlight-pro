@@ -71,10 +71,9 @@ export const GalleryEditor = () => {
             <p className="text-xs text-muted-foreground">{photos} foto(s) · {videos} vídeo(s)</p>
           </div>
         </div>
-        <Label className="cursor-pointer">
-          <Button asChild size="sm" disabled={uploading} className="bg-gradient-admin-accent shadow-admin-glow hover:opacity-90">
-            <span><Upload className="mr-1 h-4 w-4" />{uploading ? "Enviando..." : "Adicionar"}</span>
-          </Button>
+        <Label className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-gradient-admin-accent px-3 py-2 text-sm font-medium text-white shadow-admin-glow transition-smooth hover:opacity-90">
+          <Upload className="h-4 w-4" />
+          <span>{uploading ? "Enviando..." : "Adicionar"}</span>
           <input
             type="file"
             accept="image/*,video/*"
