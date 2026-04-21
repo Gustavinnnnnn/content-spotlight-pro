@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, TrendingUp, CheckCircle2, Clock, DollarSign } from "lucide-react";
+import { Loader2, TrendingUp, CheckCircle2, Clock, DollarSign, Bell, BellRing } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface Tx {
   id: string;
@@ -37,6 +39,68 @@ const statusLabel: Record<string, string> = {
 export const SalesEditor = () => {
   const [txs, setTxs] = useState<Tx[]>([]);
   const [loading, setLoading] = useState(true);
+  const [subscribing, setSubscribing] = useState(false);
+  const [testingPush, setTestingPush] = useState(false);
+
+  const subscribePush = async () => {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+      toast.error("Push não é suportado neste aparelho");
+      return;
+    }
+
+    setSubscribing(true);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        toast.error("Permissão de notificação negada");
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.ready;
+      const { data, error } = await supabase.functions.invoke("push-public-key");
+      if (error || !data?.publicKey) throw new Error(error?.message || "Chave pública indisponível");
+
+      const base64ToUint8Array = (base64String: string) => {
+        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const rawData = window.atob(base64);
+        return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+      };
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: base64ToUint8Array(data.publicKey),
+      });
+
+      const payload = subscription.toJSON();
+      const { error: saveError } = await supabase.from("push_subscriptions").upsert({
+        endpoint: payload.endpoint,
+        subscription: payload,
+        user_agent: navigator.userAgent,
+      }, { onConflict: "endpoint" });
+
+      if (saveError) throw saveError;
+      toast.success("Notificações ativadas neste aparelho");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao ativar push");
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
+  const sendTestPush = async () => {
+    setTestingPush(true);
+    const { error } = await supabase.functions.invoke("send-sale-push", {
+      body: {
+        title: "Venda aprovada",
+        body: "Teste manual de notificação no seu aparelho.",
+        data: { url: "/admin", type: "sale-approved-test" },
+      },
+    });
+    setTestingPush(false);
+    if (error) toast.error(error.message);
+    else toast.success("Notificação de teste enviada");
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -52,7 +116,14 @@ export const SalesEditor = () => {
 
     const channel = supabase
       .channel("transactions-admin")
-      .on("postgres_changes", { event: "*", schema: "public", table: "transactions" }, load)
+      .on("postgres_changes", { event: "*", schema: "public", table: "transactions" }, (payload) => {
+        load();
+        const next = payload.new as Partial<Tx> | null;
+        const prev = payload.old as Partial<Tx> | null;
+        if (next?.status === "approved" && prev?.status !== "approved") {
+          toast.success(`Venda aprovada${next.customer_name ? `: ${next.customer_name}` : ""}`);
+        }
+      })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, []);
@@ -73,6 +144,15 @@ export const SalesEditor = () => {
 
   return (
     <div className="space-y-5">
+      <div className="flex flex-wrap gap-3 rounded-2xl border border-border bg-gradient-admin-card p-4 shadow-admin">
+        <Button type="button" onClick={subscribePush} disabled={subscribing} className="bg-gradient-admin-accent shadow-admin-glow hover:opacity-90">
+          <Bell className="h-4 w-4" /> {subscribing ? "Ativando..." : "Ativar notificações neste aparelho"}
+        </Button>
+        <Button type="button" variant="secondary" onClick={sendTestPush} disabled={testingPush}>
+          <BellRing className="h-4 w-4" /> {testingPush ? "Enviando teste..." : "Enviar teste"}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {cards.map((c) => (
           <div key={c.label} className="rounded-2xl border border-border bg-gradient-admin-card p-4 shadow-admin">
