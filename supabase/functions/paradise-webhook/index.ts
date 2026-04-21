@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
       })
       .eq("id", tx.id);
 
-    // Track purchase event + send VIP via Telegram
+    // Track purchase event + send VIP via Telegram + push notifications
     if (status === "approved" && tx.status !== "approved") {
       await supabase.from("site_events").insert({
         event_type: "purchase",
@@ -74,6 +74,23 @@ Deno.serve(async (req) => {
         } catch (err) {
           console.error("Failed to send VIP message:", err);
         }
+      }
+
+      try {
+        await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/send-sale-push`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+          },
+          body: JSON.stringify({
+            title: "Venda aprovada",
+            body: `Pagamento aprovado${body.amount ? ` · R$ ${(Number(body.amount) / 100).toFixed(2).replace('.', ',')}` : ""}`,
+            data: { reference, type: "sale-approved" },
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to send sale push:", err);
       }
     }
 
