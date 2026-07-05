@@ -175,6 +175,7 @@ const Admin = () => {
               {section === "fees" && <FeesEditor />}
               {section === "gallery" && <GalleryEditor />}
               {section === "telegram" && <TelegramEditor />}
+              {section === "chat" && <TelegramChatEditor />}
             </main>
           </div>
         </div>
