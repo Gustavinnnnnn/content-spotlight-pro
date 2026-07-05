@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles, Bot, Receipt } from "lucide-react";
+import { ArrowLeft, LogOut, Menu, LayoutDashboard, User, Tag, Image as ImageIcon, ShoppingBag, Users, Sparkles, Bot, Receipt, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
