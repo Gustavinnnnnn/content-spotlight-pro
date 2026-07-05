@@ -305,6 +305,7 @@ export type Database = {
         Row: {
           chat_id: number
           created_at: string
+          direction: string
           first_name: string | null
           raw_update: Json
           text: string | null
@@ -314,6 +315,7 @@ export type Database = {
         Insert: {
           chat_id: number
           created_at?: string
+          direction?: string
           first_name?: string | null
           raw_update: Json
           text?: string | null
@@ -323,6 +325,7 @@ export type Database = {
         Update: {
           chat_id?: number
           created_at?: string
+          direction?: string
           first_name?: string | null
           raw_update?: Json
           text?: string | null
