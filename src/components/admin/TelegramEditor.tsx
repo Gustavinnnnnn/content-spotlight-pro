@@ -43,14 +43,29 @@ export const TelegramEditor = () => {
     }
 
     const { data } = supabase.storage.from("club-assets").getPublicUrl(path);
-    setS({ ...s, welcome_media_url: data.publicUrl, welcome_media_type: mediaType });
-    toast.success(mediaType === "video" ? "Vídeo adicionado" : "Foto adicionada");
+    const next = { ...s, welcome_media_url: data.publicUrl, welcome_media_type: mediaType };
+    setS(next);
+    // Persist imediatamente para não depender do botão "Salvar"
+    const { error: upErr } = await supabase
+      .from("telegram_settings")
+      .update({ welcome_media_url: data.publicUrl, welcome_media_type: mediaType })
+      .eq("id", s.id);
+    if (upErr) toast.error(upErr.message);
+    else toast.success(mediaType === "video" ? "Vídeo salvo" : "Foto salva");
   };
 
-  const clearWelcomeMedia = () => {
+  const clearWelcomeMediaAndSave = async () => {
     if (!s) return;
     setS({ ...s, welcome_media_url: null, welcome_media_type: null });
+    const { error } = await supabase
+      .from("telegram_settings")
+      .update({ welcome_media_url: null, welcome_media_type: null })
+      .eq("id", s.id);
+    if (error) toast.error(error.message);
+    else toast.success("Mídia removida");
   };
+
+  const clearWelcomeMedia = clearWelcomeMediaAndSave;
 
   const save = async () => {
     if (!s) return;
