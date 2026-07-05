@@ -65,10 +65,7 @@ export const TelegramEditor = () => {
     else toast.success("Mídia removida");
   };
 
-  const clearWelcomeMedia = () => {
-    if (!s) return;
-    setS({ ...s, welcome_media_url: null, welcome_media_type: null });
-  };
+  const clearWelcomeMedia = clearWelcomeMediaAndSave;
 
   const save = async () => {
     if (!s) return;
