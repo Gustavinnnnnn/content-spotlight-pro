@@ -27,6 +27,7 @@ const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint
   { id: "fees", label: "Taxas", icon: Receipt, hint: "Etapas extras" },
   { id: "gallery", label: "Galeria", icon: ImageIcon, hint: "Fotos e vídeos" },
   { id: "telegram", label: "Telegram", icon: Bot, hint: "Bot e canal VIP" },
+  { id: "chat", label: "Mensagens", icon: MessageCircle, hint: "Conversar com clientes" },
 ];
 
 const NavList = ({ section, onSelect }: { section: Section; onSelect: (id: Section) => void }) => (
