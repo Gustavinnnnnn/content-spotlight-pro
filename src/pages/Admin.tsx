@@ -12,10 +12,11 @@ import { DashboardEditor } from "@/components/admin/DashboardEditor";
 import { SalesEditor } from "@/components/admin/SalesEditor";
 import { CustomersEditor } from "@/components/admin/CustomersEditor";
 import { TelegramEditor } from "@/components/admin/TelegramEditor";
+import { TelegramChatEditor } from "@/components/admin/TelegramChatEditor";
 import { FeesEditor } from "@/components/admin/FeesEditor";
 import { cn } from "@/lib/utils";
 
-type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "fees" | "gallery" | "telegram";
+type Section = "dashboard" | "sales" | "customers" | "profile" | "plans" | "fees" | "gallery" | "telegram" | "chat";
 
 const SECTIONS: { id: Section; label: string; icon: typeof LayoutDashboard; hint: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, hint: "Visão geral" },
