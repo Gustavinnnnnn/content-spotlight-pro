@@ -307,6 +307,9 @@ export type Database = {
           created_at: string
           direction: string
           first_name: string | null
+          media_caption: string | null
+          media_type: string | null
+          media_url: string | null
           raw_update: Json
           text: string | null
           update_id: number
@@ -317,6 +320,9 @@ export type Database = {
           created_at?: string
           direction?: string
           first_name?: string | null
+          media_caption?: string | null
+          media_type?: string | null
+          media_url?: string | null
           raw_update: Json
           text?: string | null
           update_id: number
@@ -327,6 +333,9 @@ export type Database = {
           created_at?: string
           direction?: string
           first_name?: string | null
+          media_caption?: string | null
+          media_type?: string | null
+          media_url?: string | null
           raw_update?: Json
           text?: string | null
           update_id?: number
