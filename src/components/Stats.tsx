@@ -21,12 +21,13 @@ export const Stats = ({ posts, videos, photos, likes }: StatsProps) => {
     { icon: Heart, label: "Likes", value: likes },
   ];
   return (
-    <div className="grid grid-cols-4 gap-2 rounded-2xl bg-card p-3 shadow-card">
-      {items.map(({ icon: Icon, label, value }) => (
-        <div key={label} className="flex flex-col items-center justify-center rounded-xl py-2 text-center">
-          <Icon className="mb-1 h-4 w-4 text-primary" />
-          <div className="text-base font-extrabold text-foreground">{formatCount(value)}</div>
-          <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</div>
+    <div className="grid grid-cols-4 gap-1 rounded-2xl border border-border/60 bg-card/50 p-3 shadow-card backdrop-blur-warm">
+      {items.map(({ icon: Icon, label, value }, i) => (
+        <div key={label} className="relative flex flex-col items-center justify-center rounded-xl py-1.5 text-center">
+          {i > 0 && <span className="absolute -left-px top-2 bottom-2 w-px bg-border/50" />}
+          <Icon className="mb-1 h-4 w-4 text-primary" strokeWidth={2.4} />
+          <div className="font-display text-lg font-bold leading-none text-foreground">{formatCount(value)}</div>
+          <div className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
         </div>
       ))}
     </div>
